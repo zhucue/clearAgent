@@ -199,35 +199,46 @@ const reset = () => {
 
 <style scoped>
 .workflow-container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .el-steps {
-  margin-bottom: 40px;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .step-card {
-  margin-top: 20px;
-  border-radius: 12px;
+  margin-top: 24px;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s;
+}
+
+.step-card:hover {
+  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+    0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
+  color: rgba(0, 0, 0, 0.88);
 }
 
 .step-actions {
-  margin-top: 30px;
+  margin-top: 32px;
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 }
 </style>
