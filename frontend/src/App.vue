@@ -1,12 +1,22 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ dark: isDark }">
     <div class="app-header">
       <div class="header-content">
-        <h1>
-          <el-icon><MagicStick /></el-icon>
-          谜底语料清洗智能体
-        </h1>
-        <p class="subtitle">通过自然语言指令，智能清洗您的数据</p>
+        <div class="header-left">
+          <h1>
+            <el-icon><MagicStick /></el-icon>
+            谜底语料清洗智能体
+          </h1>
+          <p class="subtitle">通过自然语言指令，智能清洗您的数据</p>
+        </div>
+        <div class="header-right">
+          <el-button
+            :icon="isDark ? Sunny : Moon"
+            circle
+            @click="toggleTheme"
+            class="theme-toggle"
+          />
+        </div>
       </div>
 
       <!-- 波浪线动画 -->
@@ -194,7 +204,33 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import CleaningWorkflow from "./components/CleaningWorkflow.vue";
+import { MagicStick, Moon, Sunny } from "@element-plus/icons-vue";
+
+// 夜间模式状态
+const isDark = ref(false);
+
+// 从 localStorage 读取主题设置
+onMounted(() => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    isDark.value = true;
+    document.documentElement.classList.add("dark");
+  }
+});
+
+// 切换主题
+const toggleTheme = () => {
+  isDark.value = !isDark.value;
+  if (isDark.value) {
+    document.documentElement.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+};
 </script>
 
 <style scoped>
@@ -203,6 +239,11 @@ import CleaningWorkflow from "./components/CleaningWorkflow.vue";
   background: #f5f5f5;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s;
+}
+
+#app.dark {
+  background: #141414;
 }
 
 .app-header {
@@ -210,13 +251,32 @@ import CleaningWorkflow from "./components/CleaningWorkflow.vue";
   border-bottom: 1px solid #f0f0f0;
   padding: 24px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s;
+}
+
+#app.dark .app-header {
+  background: #1f1f1f;
+  border-bottom: 1px solid #303030;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .header-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
   text-align: center;
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
 }
 
 .header-content h1 {
@@ -229,11 +289,21 @@ import CleaningWorkflow from "./components/CleaningWorkflow.vue";
   justify-content: center;
   gap: 12px;
   line-height: 1.4;
+  transition: color 0.3s;
+}
+
+#app.dark .header-content h1 {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .header-content h1 .el-icon {
   font-size: 32px;
   color: #1890ff;
+  transition: color 0.3s;
+}
+
+#app.dark .header-content h1 .el-icon {
+  color: #40a9ff;
 }
 
 .subtitle {
@@ -241,6 +311,20 @@ import CleaningWorkflow from "./components/CleaningWorkflow.vue";
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
   line-height: 1.5;
+  transition: color 0.3s;
+}
+
+#app.dark .subtitle {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.theme-toggle {
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg);
 }
 
 .app-main {
@@ -258,6 +342,13 @@ import CleaningWorkflow from "./components/CleaningWorkflow.vue";
   color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
   padding: 24px;
+  transition: all 0.3s;
+}
+
+#app.dark .app-footer {
+  color: rgba(255, 255, 255, 0.45);
+  border-top: 1px solid #303030;
+  background: #1f1f1f;
 }
 
 .app-footer p {

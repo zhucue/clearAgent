@@ -210,6 +210,12 @@ const reset = () => {
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02),
     0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s;
+}
+
+html.dark .el-steps {
+  background: #1f1f1f;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .step-card {
@@ -221,9 +227,19 @@ const reset = () => {
   transition: all 0.3s;
 }
 
+html.dark .step-card {
+  border: 1px solid #303030;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
 .step-card:hover {
   box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
     0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+}
+
+html.dark .step-card:hover {
+  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.5), 0 3px 6px 0 rgba(0, 0, 0, 0.4),
+    0 5px 12px 4px rgba(0, 0, 0, 0.3);
 }
 
 .card-header {
@@ -233,6 +249,11 @@ const reset = () => {
   font-size: 16px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.88);
+  transition: color 0.3s;
+}
+
+html.dark .card-header {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .step-actions {

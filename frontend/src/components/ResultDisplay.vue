@@ -207,6 +207,11 @@ const getProgressColor = (percentage: number): string => {
   gap: 8px;
   font-size: 16px;
   font-weight: 600;
+  transition: color 0.3s;
+}
+
+html.dark .card-header {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .comparison-chart {
@@ -227,6 +232,11 @@ const getProgressColor = (percentage: number): string => {
   font-size: 14px;
   font-weight: 600;
   color: #606266;
+  transition: color 0.3s;
+}
+
+html.dark .bar-label {
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .bar-container {
@@ -234,6 +244,11 @@ const getProgressColor = (percentage: number): string => {
   background: #f5f7fa;
   border-radius: 8px;
   overflow: hidden;
+  transition: background 0.3s;
+}
+
+html.dark .bar-container {
+  background: #303030;
 }
 
 .bar {
