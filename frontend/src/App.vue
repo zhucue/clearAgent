@@ -239,7 +239,8 @@ const toggleTheme = () => {
   background: #f5f5f5;
   display: flex;
   flex-direction: column;
-  transition: background 0.3s;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app.dark {
@@ -251,7 +252,9 @@ const toggleTheme = () => {
   border-bottom: 1px solid #f0f0f0;
   padding: 24px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    border-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    box-shadow 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app.dark .app-header {
@@ -289,7 +292,7 @@ const toggleTheme = () => {
   justify-content: center;
   gap: 12px;
   line-height: 1.4;
-  transition: color 0.3s;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app.dark .header-content h1 {
@@ -299,7 +302,7 @@ const toggleTheme = () => {
 .header-content h1 .el-icon {
   font-size: 32px;
   color: #1890ff;
-  transition: color 0.3s;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app.dark .header-content h1 .el-icon {
@@ -311,7 +314,7 @@ const toggleTheme = () => {
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
   line-height: 1.5;
-  transition: color 0.3s;
+  transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app.dark .subtitle {
@@ -342,7 +345,9 @@ const toggleTheme = () => {
   color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
   padding: 24px;
-  transition: all 0.3s;
+  transition: background-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    border-color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+    color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 #app.dark .app-footer {
