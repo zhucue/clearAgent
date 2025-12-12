@@ -47,8 +47,6 @@ npm install
 npm run dev
 ```
 
-访问 http://localhost:3000
-
 ## 使用说明
 
 1. 上传文件（支持 .txt, .csv, .json）
@@ -65,7 +63,3 @@ npm run dev
 - 标准化空白字符
 - 语言过滤
 - 关键词过滤
-
-## License
-
-MIT
