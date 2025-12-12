@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test:*)",
+      "Bash(npm install:*)",
+      "Bash(powershell \"Stop-Process -Id 5428 -Force\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

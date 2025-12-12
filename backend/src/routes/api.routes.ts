@@ -29,12 +29,12 @@ const upload = multer({
   storage,
   limits: { fileSize: config.upload.maxFileSize },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ['.txt', '.csv', '.json']
+    const allowedTypes = ['.txt', '.csv', '.json', '.xlsx', '.xls']
     const ext = path.extname(file.originalname).toLowerCase()
     if (allowedTypes.includes(ext)) {
       cb(null, true)
     } else {
-      cb(new Error('只支持 .txt, .csv, .json 格式的文件'))
+      cb(new Error('只支持 .txt, .csv, .json, .xlsx, .xls 格式的文件'))
     }
   },
 })

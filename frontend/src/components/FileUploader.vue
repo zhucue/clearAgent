@@ -6,13 +6,13 @@
       :auto-upload="false"
       :show-file-list="false"
       :on-change="handleFileChange"
-      accept=".txt,.csv,.json"
+      accept=".txt,.csv,.json,.xlsx,.xls"
     >
       <div v-if="!file" class="upload-placeholder">
         <el-icon class="upload-icon"><UploadFilled /></el-icon>
         <div class="upload-text">
           <p class="primary-text">点击或拖拽文件到此处上传</p>
-          <p class="secondary-text">支持 .txt, .csv, .json 格式</p>
+          <p class="secondary-text">支持 .txt, .csv, .json, .xlsx, .xls 格式</p>
           <p class="secondary-text">文件大小限制: 100MB</p>
         </div>
       </div>
@@ -83,11 +83,18 @@ const removeFile = () => {
 const loadPreview = async (file: File) => {
   loading.value = true
   try {
-    const text = await file.text()
-    const lines = text.split('\n').slice(0, 20) // 只显示前20行
-    previewContent.value = lines.join('\n')
-    if (text.split('\n').length > 20) {
-      previewContent.value += '\n\n... (更多内容)'
+    // 检查是否为Excel文件
+    const isExcel = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')
+
+    if (isExcel) {
+      previewContent.value = '已上传 Excel 文件，将在分析时自动转换为文本格式进行处理。\n\n文件名: ' + file.name + '\n文件大小: ' + formatFileSize(file.size)
+    } else {
+      const text = await file.text()
+      const lines = text.split('\n').slice(0, 20) // 只显示前20行
+      previewContent.value = lines.join('\n')
+      if (text.split('\n').length > 20) {
+        previewContent.value += '\n\n... (更多内容)'
+      }
     }
   } catch (error) {
     console.error('Failed to load preview:', error)
