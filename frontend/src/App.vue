@@ -1,5 +1,20 @@
 <template>
   <div id="app" :class="{ dark: isDark }">
+    <!-- 页面初始加载遮罩 -->
+    <Transition name="page-loading">
+      <div v-if="pageLoading" class="page-loading-mask">
+        <div class="page-loading-spinner">
+          <div class="spinner-dot"></div>
+          <div class="spinner-dot"></div>
+          <div class="spinner-dot"></div>
+        </div>
+        <div class="page-loading-tip">正在加载...</div>
+      </div>
+    </Transition>
+
+    <!-- 异步操作加载动画 -->
+    <GlobalLoading :loading="loading" :tip="loadingTip" fullscreen />
+
     <div class="app-header">
       <div class="header-content">
         <div class="header-left">
@@ -206,13 +221,26 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import CleaningWorkflow from "./components/CleaningWorkflow.vue";
+import GlobalLoading from "./components/GlobalLoading.vue";
 import { MagicStick, Moon, Sunny } from "@element-plus/icons-vue";
+import { useLoading } from "./composables/useLoading";
+
+// 全局加载状态
+const { loading, tip: loadingTip } = useLoading();
+
+// 页面初始加载状态
+const pageLoading = ref(true);
 
 // 夜间模式状态
 const isDark = ref(false);
 
 // 从 localStorage 读取主题设置
 onMounted(() => {
+  // 模拟页面加载，延迟隐藏加载动画
+  setTimeout(() => {
+    pageLoading.value = false;
+  }, 500);
+
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
     isDark.value = true;
@@ -451,5 +479,78 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* 页面加载动画 */
+.page-loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+html.dark .page-loading-mask {
+  background: #141414;
+}
+
+.page-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.page-loading-spinner .spinner-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--el-color-primary, #1890ff);
+  animation: spinner-bounce 1.4s infinite ease-in-out both;
+}
+
+.page-loading-spinner .spinner-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.page-loading-spinner .spinner-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes spinner-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.page-loading-tip {
+  margin-top: 24px;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+html.dark .page-loading-tip {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* 页面加载淡出动画 */
+.page-loading-enter-active,
+.page-loading-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.page-loading-leave-to {
+  opacity: 0;
 }
 </style>

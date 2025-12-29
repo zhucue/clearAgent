@@ -111,7 +111,10 @@ import CommandInput from "./CommandInput.vue";
 import StrategyPreview from "./StrategyPreview.vue";
 import ResultDisplay from "./ResultDisplay.vue";
 import * as api from "@/services/api";
+import { useLoading } from "@/composables/useLoading";
 import type { CleaningStrategy, FileStats, CleaningResult } from "@/types";
+
+const { show: showLoading, hide: hideLoading } = useLoading();
 
 const currentStep = ref(0);
 const uploadedFile = ref<File | null>(null);
@@ -143,6 +146,7 @@ const analyzeFile = async () => {
   if (!uploadedFile.value || !command.value) return;
 
   analyzing.value = true;
+  showLoading("正在分析文件并生成清洗策略...");
   try {
     const result = await api.analyzeCorpus(uploadedFile.value, command.value);
     strategy.value = result.strategy;
@@ -155,6 +159,7 @@ const analyzeFile = async () => {
     ElMessage.error(error.message || "分析失败，请重试");
   } finally {
     analyzing.value = false;
+    hideLoading();
   }
 };
 
@@ -162,6 +167,7 @@ const executeClean = async () => {
   if (!filePath.value || !strategy.value) return;
 
   executing.value = true;
+  showLoading("正在执行清洗，请稍候...");
   try {
     const result = await api.executeCleaning(filePath.value, strategy.value);
     cleanResult.value = result;
@@ -172,6 +178,7 @@ const executeClean = async () => {
     ElMessage.error(error.message || "执行失败，请重试");
   } finally {
     executing.value = false;
+    hideLoading();
   }
 };
 
