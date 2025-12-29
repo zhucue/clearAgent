@@ -18,7 +18,6 @@ export class FileService {
    */
   private readExcelFile(filePath: string): string[] {
     const workbook = xlsx.readFile(filePath)
-    const lines: string[] = []
 
     // 读取第一个工作表
     const sheetName = workbook.SheetNames[0]
@@ -26,9 +25,7 @@ export class FileService {
 
     // 将工作表转换为CSV格式，然后分割成行
     const csv = xlsx.utils.sheet_to_csv(worksheet)
-    const rows = csv.split('\n').filter(line => line.trim() !== '')
-
-    return rows
+    return csv.split('\n').filter(line => line.trim() !== '')
   }
 
   /**
@@ -113,7 +110,14 @@ export class FileService {
   /**
    * 写入文件
    */
-  async writeFileLines(filePath: string, lines: string[]): Promise<void> {
+  async writeFileLines(filePath: string, lines: string[], originalFilePath?: string): Promise<void> {
+    // 如果指定了原始文件路径且是 Excel 文件，则输出为 Excel 格式
+    if (originalFilePath && this.isExcelFile(originalFilePath)) {
+      this.writeExcelFile(filePath, lines)
+      return
+    }
+
+    // 默认写入为文本文件
     const writeStream = fs.createWriteStream(filePath, { encoding: 'utf-8' })
 
     for (const line of lines) {
@@ -126,6 +130,93 @@ export class FileService {
       writeStream.on('finish', resolve)
       writeStream.on('error', reject)
     })
+  }
+
+  /**
+   * 将数据写入 Excel 文件
+   * 从 CSV 格式的数据重新构建 Excel 表格
+   */
+  private writeExcelFile(filePath: string, lines: string[]): void {
+    // 将 CSV 格式的行转换为二维数组
+    const data: string[][] = []
+    for (const line of lines) {
+      // 简单的 CSV 解析（处理逗号分隔）
+      const row = this.parseCSVLine(line)
+      data.push(row)
+    }
+
+    // 创建工作簿和工作表
+    const worksheet = xlsx.utils.aoa_to_sheet(data)
+    const workbook = xlsx.utils.book_new()
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+
+    // 确保输出目录存在
+    const dir = path.dirname(filePath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+
+    // 写入 Excel 文件（.xlsx 格式）
+    const xlsxPath = filePath.replace(/\.txt$/i, '.xlsx')
+    xlsx.writeFile(workbook, xlsxPath)
+  }
+
+  /**
+   * 简单的 CSV 行解析
+   */
+  private parseCSVLine(line: string): string[] {
+    // 处理带引号的 CSV 字段
+    const result: string[] = []
+    let current = ''
+    let inQuotes = false
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i]
+
+      if (char === '"') {
+        inQuotes = !inQuotes
+      } else if (char === ',' && !inQuotes) {
+        result.push(current)
+        current = ''
+      } else {
+        current += char
+      }
+    }
+    result.push(current)
+
+    return result
+  }
+
+  /**
+   * 获取Excel文件预览数据（返回JSON格式用于前端表格展示）
+   */
+  getExcelPreview(filePath: string, maxRows: number = 20): {
+    headers: string[]
+    rows: string[][]
+    totalRows: number
+  } {
+    const workbook = xlsx.readFile(filePath)
+    const sheetName = workbook.SheetNames[0]
+    const worksheet = workbook.Sheets[sheetName]
+
+    // 获取工作表数据（二维数组格式）
+    const data = xlsx.utils.sheet_to_json<string[]>(worksheet, { header: 1 })
+
+    if (data.length === 0) {
+      return { headers: [], rows: [], totalRows: 0 }
+    }
+
+    // 第一行作为表头
+    const headers = data[0] || []
+
+    // 其余行作为数据行（最多返回maxRows行）
+    const rows = data.slice(1, maxRows + 1).map(row => row || [])
+
+    return {
+      headers,
+      rows,
+      totalRows: data.length - 1, // 减去表头行
+    }
   }
 
   /**

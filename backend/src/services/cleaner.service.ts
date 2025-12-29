@@ -47,8 +47,14 @@ export class CleanerService {
       console.log(`   Result: ${lines.length} lines, ${currentChars} characters`)
     }
 
-    // 写入结果文件
-    await this.fileService.writeFileLines(outputFilePath, lines)
+    // 写入结果文件（传入原始文件路径以保留格式）
+    await this.fileService.writeFileLines(outputFilePath, lines, inputFilePath)
+
+    // 确定实际输出的文件名（Excel 文件会自动添加 .xlsx 扩展名）
+    const isExcelInput = inputFilePath.toLowerCase().endsWith('.xlsx') || inputFilePath.toLowerCase().endsWith('.xls')
+    const actualOutputPath = isExcelInput
+      ? outputFilePath.replace(/\.txt$/i, '.xlsx')
+      : outputFilePath
 
     const finalLines = lines.length
     const finalChars = lines.reduce((sum, line) => sum + line.length, 0)
@@ -59,8 +65,8 @@ export class CleanerService {
 
     return {
       success: true,
-      outputFile: path.basename(outputFilePath),
-      outputPath: outputFilePath,
+      outputFile: path.basename(actualOutputPath),
+      outputPath: actualOutputPath,
       stats: {
         originalLines,
         finalLines,

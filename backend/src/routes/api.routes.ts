@@ -178,5 +178,43 @@ router.get('/cleaners', (req, res) => {
   res.json({ cleaners })
 })
 
+/**
+ * POST /api/preview
+ * 获取文件预览（支持Excel表格格式）
+ */
+router.post('/preview', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: '请上传文件' })
+    }
+
+    const filePath = req.file.path
+    const ext = path.extname(req.file.originalname).toLowerCase()
+    const isExcel = ext === '.xlsx' || ext === '.xls'
+
+    if (isExcel) {
+      // Excel文件返回表格数据
+      const preview = fileService.getExcelPreview(filePath, 20)
+      res.json({
+        type: 'table',
+        data: preview,
+      })
+    } else {
+      // 普通文本文件返回文本预览
+      const sample = await fileService.getFileSample(filePath, 20)
+      res.json({
+        type: 'text',
+        data: sample,
+      })
+    }
+  } catch (error: any) {
+    console.error('❌ Error in /api/preview:', error)
+    res.status(500).json({
+      error: '预览失败',
+      message: error.message,
+    })
+  }
+})
+
 export default router
 
